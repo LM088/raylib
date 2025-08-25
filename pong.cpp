@@ -9,9 +9,14 @@ int main()
     InitWindow(screen_width, screen_height, "Pong!");
     SetTargetFPS(60);
     
-    while(!WindowShouldClose)
+    while(!WindowShouldClose())
     {
         BeginDrawing();
+        DrawCircle(screen_width/2, screen_height/2, 20, WHITE);
+        DrawRectangle(10, screen_height/2 - 60, 25, 120, WHITE);
+        // -35 and not -10 because you have to take rectangle width into consideration. 
+        // rectangle is drawn from TOP LEFT corner 
+        DrawRectangle(screen_width-35, screen_height/2-60, 25, 120, WHITE);
 
         EndDrawing();
     }
