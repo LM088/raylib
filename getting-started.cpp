@@ -11,9 +11,22 @@ int main()
     //Game loop
     while(!WindowShouldClose())
     {
-        // 1. Event Handling 
+        // 1. Event Handling
+        if (IsKeyDown(KEY_RIGHT))
+        {
+            ballX += 3;
+        }else if (IsKeyDown(KEY_LEFT))
+        {
+            ballX -= 3;
+        }else if (IsKeyDown(KEY_UP))
+        {
+            ballY -= 3;
+        }else if (IsKeyDown(KEY_DOWN))
+        {
+            ballY += 3;
+        }
         // 2. Updating Positions 
-        ballX += 3;
+    
         // 3. Drawing
         ClearBackground(pink); 
         BeginDrawing();
