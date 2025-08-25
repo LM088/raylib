@@ -2,6 +2,9 @@
 
 int main()
 {
+    int ballX= 400; 
+    int ballY= 400; 
+    Color pink= {207, 101, 150, 225};
     InitWindow(800,800,"Game");
     SetTargetFPS(60);
 
@@ -10,8 +13,12 @@ int main()
     {
         // 1. Event Handling 
         // 2. Updating Positions 
-        // 3. Drawing 
+        ballX += 3;
+        // 3. Drawing
+        ClearBackground(pink); 
         BeginDrawing();
+        DrawCircle(ballX,ballY,20,WHITE);
+
         EndDrawing();
         
     }; 
