@@ -1,6 +1,9 @@
 #include <iostream>
 #include <raylib.h>
 
+int player_score= 0; 
+int cpu_score= 0; 
+
 class Ball 
 {
 public:
@@ -23,10 +26,26 @@ public:
             speed_y *= -1; 
         }
 
-        if ( x + radius >= GetScreenWidth() || x - radius <= 0)
+        if ( x + radius >= GetScreenWidth())
         {
-            speed_x *= -1; 
+            player_score++;
+            ResetBall();
         }
+        if (x - radius <= 0)
+        {
+             cpu_score++;
+             ResetBall(); 
+        }
+    }
+
+    void ResetBall()
+    {
+        x= GetScreenWidth()/2;
+        y= GetScreenHeight()/2;
+
+        int speed_choices[2]={1,-1};
+        speed_x *= speed_choices[GetRandomValue(0,1)];
+
     }
 };
 
@@ -136,12 +155,24 @@ int main()
         player.Update();
         cpu.Update(ball.y);
 
+        // Checking for collision 
+        if(CheckCollisionCircleRec(Vector2{ball.x,ball.y}, ball.radius, Rectangle{player.x,player.y,player.width,player.height}))
+        {
+            ball.speed_x *= -1;
+        }
+        if(CheckCollisionCircleRec(Vector2{ball.x,ball.y}, ball.radius, Rectangle{cpu.x,cpu.y,cpu.width,cpu.height}))
+        {
+            ball.speed_x *= -1;
+        }
+
         // clear background before drawing 
         ClearBackground(BLACK);
         DrawLine(screen_width/2, 0, screen_width/2, screen_height, WHITE);
         ball.Draw();
         player.Draw(); 
         cpu.Draw();
+        DrawText(TextFormat("%i",player_score), screen_width/4, 20, 40, WHITE); 
+        DrawText(TextFormat("%i",cpu_score), 3* screen_width/4, 20, 40, WHITE); 
 
         EndDrawing();
     }
