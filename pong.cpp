@@ -33,7 +33,24 @@ public:
 
 class Paddle 
 {
+
+protected: // We did this just to avoid duplicate code. Everything in this class will just be inherited by the cpu class. 
+
+    void LimitMovement()
+    {
+         if ( y + height >= GetScreenHeight())
+        {
+            y = (GetScreenHeight()-height) - 10 ;  
+        }
+
+        if (y  <= 0)
+        {
+            y = 10; 
+        }
+    }    
+
 public:
+
     float x,y = 0;
     float width, height = 0;    
     int speed= 0; 
@@ -56,20 +73,31 @@ public:
             y += speed;
         }
 
-        if ( y + height >= GetScreenHeight())
-        {
-            y = (GetScreenHeight()-height) - 10 ;  
-        }
+       LimitMovement();
 
-        if (y  <= 0)
+    }
+};
+
+class CpuPaddle : public Paddle
+{
+public:
+    void Update(int ball_y)
+    {
+        if(y+ height/2 > ball_y)
         {
-            y = 10; 
+            y -= speed; 
         }
+        if(y+ height/2 < ball_y)
+        {
+            y +=speed; 
+        } 
+        LimitMovement(); 
     }
 };
 
 Ball ball; 
-Paddle player; 
+Paddle player;
+CpuPaddle cpu;  
 
 int main()
 {
@@ -92,6 +120,12 @@ int main()
     player.y= screen_height/2 - player.height/2;
     player.speed= 6;
 
+    cpu.width= 25;
+    cpu.height= 120; 
+    cpu.x= screen_width - 35; //-35 and not -10 because you have to take rectangle width into consideration. Rectangle is drawn from TOP LEFT corner.
+    cpu.y= screen_height/2 - cpu.height/2; 
+    cpu.speed= 6; 
+
     
     while(!WindowShouldClose())
     {
@@ -100,15 +134,14 @@ int main()
         // Updating position
         ball.Update();
         player.Update();
+        cpu.Update(ball.y);
 
         // clear background before drawing 
         ClearBackground(BLACK);
         DrawLine(screen_width/2, 0, screen_width/2, screen_height, WHITE);
         ball.Draw();
-        player.Draw();
-        // -35 and not -10 because you have to take rectangle width into consideration. 
-        // rectangle is drawn from TOP LEFT corner 
-        DrawRectangle(screen_width-35, screen_height/2-60, 25, 120, WHITE);
+        player.Draw(); 
+        cpu.Draw();
 
         EndDrawing();
     }
