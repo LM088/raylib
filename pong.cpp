@@ -1,6 +1,10 @@
 #include <iostream>
 #include <raylib.h>
 
+Color pink={243, 144, 179, 255};
+Color dark_pink= {239, 108, 154, 200};
+Color light_pink= {235, 188, 226, 225}; 
+
 int player_score= 0; 
 int cpu_score= 0; 
 
@@ -13,7 +17,7 @@ public:
 
     void Draw()
     {
-        DrawCircle(x, y, radius, WHITE);
+        DrawCircle(x, y, radius, BLACK);
     }
 
     void Update()
@@ -76,7 +80,7 @@ public:
 
     void Draw()
     {
-        DrawRectangle(x, y, width, height, WHITE);
+        DrawRectangleRounded(Rectangle{x, y, width, height}, 0.8, 0, WHITE);
     }
 
     void Update()
@@ -166,7 +170,9 @@ int main()
         }
 
         // clear background before drawing 
-        ClearBackground(BLACK);
+        ClearBackground(pink);
+        DrawCircle(screen_width/2, screen_height/2, 150, light_pink);
+        DrawRectangle(0, 0, screen_width/2, screen_height, dark_pink);
         DrawLine(screen_width/2, 0, screen_width/2, screen_height, WHITE);
         ball.Draw();
         player.Draw(); 
