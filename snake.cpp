@@ -1,5 +1,7 @@
 #include <iostream>
 #include <raylib.h>
+#include <deque>
+#include <raymath.h>
 
 int score=0; 
 Color green = {173, 204, 96, 255};
@@ -9,7 +11,30 @@ Color darkGreen = {43, 51, 24, 255};
 int cellSize = 30;
 int cellCount = 25;
 
-// Making food class 
+class Snake 
+{
+public: 
+    std::deque<Vector2> body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
+    Vector2 direction= {1,0}; 
+    
+    void Draw()
+    {
+        for (unsigned int i=0; i< body.size(); i++) // must declare i to be unsigned or else we're comparing 2 different data types.
+        {
+            float x= body[i].x;
+            float y= body[i].y; 
+            DrawRectangleRounded(Rectangle{x*cellSize, y*cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
+        }
+    }
+
+    void Update()
+    {
+        body.pop_back();
+        body.push_front(Vector2Add(body[0], direction)); 
+    }
+};
+
+
 class Food
 {
 public:
@@ -19,6 +44,7 @@ public:
     Food()
     {
         Image image= LoadImage("resources/apple.png");
+        ImageResizeNN(&image, 100, 100);
         if (image.data == nullptr) 
         {
             std::cout << "Failed to load image! Check path or working directory.\n";
@@ -66,12 +92,19 @@ int main()
     */
     
     {Food apple; 
+     Snake snake; 
 
     while(!WindowShouldClose())
     {
         BeginDrawing();
+
+        // Update
+        snake.Update();
+
+        // Draw
         ClearBackground(green);
         apple.Draw(); 
+        snake.Draw(); 
 
         EndDrawing();
     }
