@@ -1,7 +1,19 @@
 #include <iostream>
 #include <raylib.h>
-#include <deque>
-#include <raymath.h>
+#include <deque>      // for body, better than array
+#include <raymath.h>  // for Vector2Add fun 
+
+/*
+
+So far, our snake moves 60 blocks per sec.
+Because we set fps to 60, the game loop runs 60 times per sec, and hence 
+the update function also runs 60 times in a sec. 
+
+Let's set it so that it doesn't update EVERY loop of the game loop. 
+We'll set it so that it updates only after a certain amount of time has passed 
+since the program has started execution. 
+
+*/
 
 int score=0; 
 Color green = {173, 204, 96, 255};
@@ -10,6 +22,19 @@ Color darkGreen = {43, 51, 24, 255};
 // Making grid 
 int cellSize = 30;
 int cellCount = 25;
+
+double lastUpdateTime = 0;
+
+bool eventTriggered(double interval)
+{
+    double currentTime= GetTime();
+    if ( currentTime - lastUpdateTime >= interval)
+    {
+        lastUpdateTime = currentTime;
+        return true; 
+    }
+    return false; 
+}
 
 class Snake 
 {
@@ -99,7 +124,11 @@ int main()
         BeginDrawing();
 
         // Update
-        snake.Update();
+        if (eventTriggered(0.2))
+        {
+            snake.Update();
+        }
+        
 
         // Draw
         ClearBackground(green);
