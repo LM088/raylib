@@ -66,17 +66,17 @@ public:
     Vector2 position; 
     Texture2D texture;
 
-    Food()
+    Food(std::deque<Vector2> snakeBody)
     {
         Image image= LoadImage("resources/apple.png");
-        ImageResizeNN(&image, 100, 100);
+        ImageResizeNN(&image, cellSize, cellSize);
         if (image.data == nullptr) 
         {
             std::cout << "Failed to load image! Check path or working directory.\n";
         }
         texture = LoadTextureFromImage(image); 
         UnloadImage(image);
-        position= GenRandomPos(); 
+        position= GenRandomPos(snakeBody); 
     }
 
     ~Food()
@@ -91,12 +91,25 @@ public:
         DrawTexture(texture, position.x*cellSize, position.y*cellSize, WHITE);
     }
 
-    Vector2 GenRandomPos()
+    Vector2 GenRandomCell()
     {
         float x = GetRandomValue(0, cellCount-1);
         float y = GetRandomValue(0, cellCount-1);
         return Vector2{x,y}; 
     } 
+
+    Vector2 GenRandomPos(std::deque<Vector2> snakeBody)
+    {
+        position= GenRandomCell(); 
+        for ( unsigned int i; i< snakeBody.size(); i++)
+        {
+            if( Vector2Equals(snakeBody[i], position))
+            {
+                position= GenRandomCell(); 
+            }
+        }
+        return position; 
+    }
 };
  
 
@@ -116,8 +129,8 @@ int main()
         - Hence we wrap it in a scope so that the object is destroyed FIRST, then the window. 
     */
     
-    {Food apple; 
-     Snake snake; 
+    {Snake snake;
+     Food apple(snake.body);  
 
     while(!WindowShouldClose())
     {
@@ -151,6 +164,11 @@ int main()
         ClearBackground(green);
         apple.Draw(); 
         snake.Draw(); 
+
+        if (Vector2Equals(snake.body[0], apple.position ))
+        {
+            apple.position= apple.GenRandomPos(snake.body);
+        }
 
         EndDrawing();
     }
