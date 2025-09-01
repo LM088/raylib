@@ -2,11 +2,29 @@
 #include <raylib.h>
 
 Color pink={243, 144, 179, 255};
-Color dark_pink= {239, 108, 154, 200};
+Color dark_pink= {239, 108, 154, 100};
 Color light_pink= {235, 188, 226, 225}; 
+Color blue= {0, 159, 183, 50}; 
+Color yellow= {241,211,2,225};
 
 int player_score= 0; 
 int cpu_score= 0; 
+bool reset= false; 
+
+void gameOver()
+{
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), blue);
+    if (player_score ==5)
+    {
+        DrawText(" YOU WIN ! ", GetScreenWidth()/4 + 50 , GetScreenHeight()/2 - 150, 100, yellow);
+    }else
+    {
+        DrawText(" Computer WINS ! ", GetScreenWidth()/4 + 50 , GetScreenHeight()/2 - 150, 50, yellow);
+    }
+    DrawText("Game   ver.", GetScreenWidth()/4, GetScreenHeight()/2 - 50, 100, WHITE);
+    DrawText("press Esc to exit.", 3* GetScreenWidth()/8, GetScreenHeight()/2+ 100 , 30, WHITE);
+    reset= true; 
+}
 
 class Ball 
 {
@@ -155,9 +173,12 @@ int main()
         BeginDrawing();
 
         // Updating position
-        ball.Update();
-        player.Update();
-        cpu.Update(ball.y);
+        if (reset == false)
+        {
+            ball.Update();
+            player.Update();
+            cpu.Update(ball.y);
+        }
 
         // Checking for collision 
         if(CheckCollisionCircleRec(Vector2{ball.x,ball.y}, ball.radius, Rectangle{player.x,player.y,player.width,player.height}))
@@ -172,13 +193,19 @@ int main()
         // clear background before drawing 
         ClearBackground(pink);
         DrawCircle(screen_width/2, screen_height/2, 150, light_pink);
-        DrawRectangle(0, 0, screen_width/2, screen_height, dark_pink);
+        DrawRectangle(screen_width/2, 0, screen_width/2, screen_height, dark_pink);
         DrawLine(screen_width/2, 0, screen_width/2, screen_height, WHITE);
         ball.Draw();
         player.Draw(); 
         cpu.Draw();
         DrawText(TextFormat("%i",player_score), screen_width/4, 20, 40, WHITE); 
         DrawText(TextFormat("%i",cpu_score), 3* screen_width/4, 20, 40, WHITE); 
+
+        // Checking if game over 
+        if (player_score == 5 || cpu_score == 5)
+        {
+            gameOver(); 
+        }
 
         EndDrawing();
     }
