@@ -22,6 +22,7 @@ Color darkGreen = {43, 51, 24, 255};
 // Making grid 
 int cellSize = 30;
 int cellCount = 25;
+int offset= 75; 
 
 double lastUpdateTime = 0;
 
@@ -50,7 +51,7 @@ public:
         {
             float x= body[i].x;
             float y= body[i].y; 
-            DrawRectangleRounded(Rectangle{x*cellSize, y*cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
+            DrawRectangleRounded(Rectangle{offset + x*cellSize, offset + y*cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
         }
     }
 
@@ -118,7 +119,7 @@ public:
     {
         // Replacing DrawRectangle with DrawTexture
         //DrawRectangle(position.x*cellSize, position.y*cellSize, cellSize,cellSize, darkGreen);
-        DrawTexture(texture, position.x*cellSize, position.y*cellSize, WHITE);
+        DrawTexture(texture, offset + position.x*cellSize, offset + position.y*cellSize, WHITE);
     }
 
     Vector2 GenRandomCell()
@@ -148,7 +149,7 @@ int main()
     const int screen_width= cellSize*cellCount;
     const int screen_height= cellSize*cellCount; 
     
-    InitWindow(screen_width, screen_height, "SNAKE!");
+    InitWindow(2*offset+screen_width, 2*offset+screen_height, "SNAKE!");
     SetTargetFPS(60); 
 
     /*
@@ -197,6 +198,18 @@ int main()
 
         // Draw
         ClearBackground(green);
+
+        // this fun just draws the outline of a rect 
+        // - we're basically trying to draw a frame around what *was* the viewport 
+        // - frame by itself takes up 5 px, so you want to draw it in the space reserved for offset and not our viewport.
+        // - offset is the space reserved as a frame around former viewport. 
+        // - Hence start drawing rect 5 px away from where offset px end. 
+        // - the width and height entered is the space inside the rectangular frame, which should be the same as our previously defined const screen_width and screen_height
+        // - width and height entered also includes space taken up by the border, since rect outline is drawn from top left corner. 
+        // - hence we add 5*2 px to both width and height
+        // - All of these steps are important to ensure the former viweport area takes up exactly as much space as before, as the Snake and Food classes have also been constructed keeping these dimensions in mind. 
+        DrawRectangleLinesEx(Rectangle{(float)offset-5, (float)offset-5, (float)screen_width+10, (float)screen_height+10}, 5, darkGreen);
+
         apple.Draw(); 
         snake.Draw(); 
 
