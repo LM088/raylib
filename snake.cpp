@@ -72,6 +72,7 @@ public:
         body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
         direction= {1,0}; 
         reset= true; 
+        score=0; 
     }
 
     void CheckCollisionTail()
@@ -209,7 +210,8 @@ int main()
         // - hence we add 5*2 px to both width and height
         // - All of these steps are important to ensure the former viweport area takes up exactly as much space as before, as the Snake and Food classes have also been constructed keeping these dimensions in mind. 
         DrawRectangleLinesEx(Rectangle{(float)offset-5, (float)offset-5, (float)screen_width+10, (float)screen_height+10}, 5, darkGreen);
-
+        DrawText("SNAKE!", offset-5, 20, 40, darkGreen); 
+        DrawText(TextFormat("score: %i", score), screen_width-20, 30, 25, darkGreen ); 
         apple.Draw(); 
         snake.Draw(); 
 
@@ -217,6 +219,7 @@ int main()
         {
             apple.position= apple.GenRandomPos(snake.body);
             snake.addSegment= true; 
+            score++; 
         }
 
         if (snake.body[0].x == cellCount || snake.body[0].x == -1)
