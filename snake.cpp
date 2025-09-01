@@ -42,6 +42,7 @@ public:
     std::deque<Vector2> body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
     Vector2 direction= {1,0}; 
     bool addSegment= false; 
+    bool reset= false; 
     
     void Draw()
     {
@@ -63,6 +64,12 @@ public:
         {
             body.pop_back(); 
         }
+    }
+
+    void gameOver()
+    {
+        body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
+        reset= true; 
     }
 };
 
@@ -108,7 +115,7 @@ public:
     Vector2 GenRandomPos(std::deque<Vector2> snakeBody)
     {
         position= GenRandomCell(); 
-        for ( unsigned int i; i< snakeBody.size(); i++)
+        for ( unsigned int i= 0 ; i< snakeBody.size(); i++)
         {
             if( Vector2Equals(snakeBody[i], position))
             {
@@ -144,26 +151,30 @@ int main()
         BeginDrawing();
 
         // Update
-        if (eventTriggered(0.2))
+        if (eventTriggered(0.2) && !snake.reset)
         {
-            snake.Update();
+                snake.Update();
         }
         
         if (IsKeyPressed(KEY_DOWN) && snake.direction.y != -1)
         {
             snake.direction= {0,1};
+            snake.reset= false; 
         }
         if (IsKeyPressed(KEY_UP) && snake.direction.y != 1)
         {
             snake.direction= {0,-1};
+            snake.reset= false;
         }
         if (IsKeyPressed(KEY_LEFT) && snake.direction.x != 1)
         {
             snake.direction= {-1,0};
+            snake.reset= false;
         }
         if (IsKeyPressed(KEY_RIGHT) && snake.direction.x != -1)
         {
             snake.direction= {1,0};
+            snake.reset= false;
         }
         
 
@@ -176,6 +187,15 @@ int main()
         {
             apple.position= apple.GenRandomPos(snake.body);
             snake.addSegment= true; 
+        }
+
+        if (snake.body[0].x == cellCount || snake.body[0].x == -1)
+        {
+            snake.gameOver(); 
+        }
+        if (snake.body[0].y == cellCount || snake.body[0].y == -1)
+        {
+            snake.gameOver(); 
         }
 
         EndDrawing();
