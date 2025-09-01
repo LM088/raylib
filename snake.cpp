@@ -69,7 +69,23 @@ public:
     void gameOver()
     {
         body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
+        direction= {1,0}; 
         reset= true; 
+    }
+
+    void CheckCollisionTail()
+    {
+        std::deque<Vector2> headlessBody= body;
+        headlessBody.pop_front();
+        for(unsigned int i= 0; i< headlessBody.size(); i++)
+        {
+            if(Vector2Equals(body[0], headlessBody[i]))
+            {
+                gameOver(); 
+            }
+        }
+
+
     }
 };
 
@@ -154,6 +170,7 @@ int main()
         if (eventTriggered(0.2) && !snake.reset)
         {
                 snake.Update();
+                snake.CheckCollisionTail(); 
         }
         
         if (IsKeyPressed(KEY_DOWN) && snake.direction.y != -1)
