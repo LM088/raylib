@@ -44,6 +44,8 @@ public:
     Vector2 direction= {1,0}; 
     bool addSegment= false; 
     bool reset= false;  
+
+    Sound* gameOverSound; 
     
     void Draw()
     {
@@ -73,6 +75,7 @@ public:
         direction= {1,0}; 
         reset= true; 
         score=0; 
+        PlaySound(*gameOverSound); 
     }
 
     void CheckCollisionTail()
@@ -153,7 +156,7 @@ int main()
     InitWindow(2*offset+screen_width, 2*offset+screen_height, "SNAKE!");
     SetTargetFPS(60); 
 
-    Sound gameStartSound;
+    
     Sound eatSound; 
     Sound gameOverSound;
     InitAudioDevice();
@@ -161,7 +164,7 @@ int main()
     { 
     std::cout << "Audio device NOT ready!\n";
     }
-    gameStartSound= LoadSound("./resources/game-start.mp3");
+
     eatSound= LoadSound("./resources/eat.mp3");
     gameOverSound= LoadSound("./resources/game-over.mp3");
 
@@ -205,7 +208,7 @@ int main()
         if (IsKeyPressed(KEY_RIGHT) && snake.direction.x != -1)
         {
             snake.direction= {1,0};
-            snake.reset= false;
+            snake.reset= false; 
         }
         
 
