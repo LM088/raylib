@@ -43,7 +43,7 @@ public:
     std::deque<Vector2> body={Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
     Vector2 direction= {1,0}; 
     bool addSegment= false; 
-    bool reset= false; 
+    bool reset= false;  
     
     void Draw()
     {
@@ -153,6 +153,18 @@ int main()
     InitWindow(2*offset+screen_width, 2*offset+screen_height, "SNAKE!");
     SetTargetFPS(60); 
 
+    Sound gameStartSound;
+    Sound eatSound; 
+    Sound gameOverSound;
+    InitAudioDevice();
+    if (!IsAudioDeviceReady())
+    { 
+    std::cout << "Audio device NOT ready!\n";
+    }
+    gameStartSound= LoadSound("./resources/game-start.mp3");
+    eatSound= LoadSound("./resources/eat.mp3");
+    gameOverSound= LoadSound("./resources/game-over.mp3");
+
     /*
     We're going to create a scope around the apple object. This is because: 
         - apple runs a destructor ~Food() to unload textures.
@@ -220,6 +232,7 @@ int main()
             apple.position= apple.GenRandomPos(snake.body);
             snake.addSegment= true; 
             score++; 
+            PlaySound(eatSound);
         }
 
         if (snake.body[0].x == cellCount || snake.body[0].x == -1)
@@ -235,6 +248,9 @@ int main()
     }
 
     }
-
+    UnloadSound(gameStartSound);
+    UnloadSound(eatSound);
+    UnloadSound(gameOverSound); 
+    CloseAudioDevice(); 
     CloseWindow();
 }
