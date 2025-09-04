@@ -156,7 +156,7 @@ int main()
     InitWindow(2*offset+screen_width, 2*offset+screen_height, "SNAKE!");
     SetTargetFPS(60); 
 
-    
+
     Sound eatSound; 
     Sound gameOverSound;
     InitAudioDevice();
@@ -177,6 +177,7 @@ int main()
     */
     
     {Snake snake;
+     snake.gameOverSound = &gameOverSound;
      Food apple(snake.body);  
 
     while(!WindowShouldClose())
@@ -251,7 +252,7 @@ int main()
     }
 
     }
-    UnloadSound(gameStartSound);
+    
     UnloadSound(eatSound);
     UnloadSound(gameOverSound); 
     CloseAudioDevice(); 
